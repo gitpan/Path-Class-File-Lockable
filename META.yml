@@ -1,0 +1,17 @@
+--- #YAML:1.0
+name:                Path-Class-File-Lockable
+version:             0.01
+abstract:            lock your files with Path::Class::File
+license:             ~
+generated_by:        ExtUtils::MakeMaker version 6.36
+distribution_type:   module
+requires:     
+    Fcntl:                         0
+    File::NFSLock:                 0
+    Path::Class:                   0
+    Test::More:                    0
+meta-spec:
+    url:     http://module-build.sourceforge.net/META-spec-v1.2.html
+    version: 1.2
+author:
+    - Peter Karman <perl@peknet.com>
