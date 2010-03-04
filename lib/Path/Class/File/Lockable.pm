@@ -17,7 +17,7 @@ Version 0.01
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 SYNOPSIS
 
@@ -65,12 +65,12 @@ sub lock_file {
 
 =head2 lock_info
 
-Returns a colon-limited string with the owner of the lock
-and timestamp of when the lock was made. Will croak
-if the lock file does not exist.
+Returns a colon-limited string with the contents of the lock file. 
+Will croak if the lock file does not exist.
 
-B<Note> that the owner and timestamp are not from a stat() of the file.
-They come from the contents of the file, which are written
+B<Note> that the owner and timestamp in the file contents
+are not from a stat() of the file.
+They are written
 at the time the lock file is created. So chown'ing or touch'ing
 a lock file do not alter its status.
 
@@ -108,6 +108,17 @@ Returns the time the file was locked (in Epoch seconds).
 sub lock_time {
     my $self = shift;
     return ( split( m/:/, $self->lock_info ) )[1];
+}
+
+=head2 lock_pid
+
+Returns the PID of the process that locked the file.
+
+=cut
+
+sub lock_pid {
+    my $self = shift;
+    return ( split( m/:/, $self->lock_info ) )[2];
 }
 
 =head2 locked
@@ -152,7 +163,7 @@ sub lock {
     }
 
     my $fh = $self->lock_file->openw() or croak "can't write lock file: $!";
-    print {$fh} join( ':', $owner, time() );
+    print {$fh} join( ':', $owner, time(), $$ );
     $fh->close;
 
     $lock->unlock;

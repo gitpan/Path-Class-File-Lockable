@@ -1,4 +1,4 @@
-use Test::More tests => 12;
+use Test::More tests => 13;
 
 BEGIN { use_ok('Path::Class::File::Lockable'); }
 
@@ -21,8 +21,9 @@ like( $info, qr/^(.+?):(\d+)$/, "lock info looks sane" );
 
 ok( my $user = $file->lock_owner, "get lock_owner" );
 ok( my $time = $file->lock_time,  "get lock_time" );
+ok( my $pid  = $file->lock_pid,   "get lock_pid" );
 
-diag( "$file locked by $user at " . localtime($time) );
+diag( "$file locked by $user at " . localtime($time) . " with pid $pid" );
 
 cmp_ok( $time, '<=', time(), "lock time is in the past" );
 

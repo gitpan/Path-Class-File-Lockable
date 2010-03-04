@@ -3,3 +3,6 @@ Revision history for Path-Class-File-Lockable
 0.01    27 Sept 2007
         First version, released on an unsuspecting world.
 
+0.02    04 March 2010
+        * add PID to lock file contents
+
