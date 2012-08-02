@@ -7,24 +7,18 @@ use File::NFSLock;
 use Fcntl qw(LOCK_EX LOCK_NB);
 use Carp;
 
+our $VERSION = '0.03';
+
 =head1 NAME
 
 Path::Class::File::Lockable - lock your files with Path::Class::File
 
-=head1 VERSION
-
-Version 0.01
-
-=cut
-
-our $VERSION = '0.02';
-
 =head1 SYNOPSIS
 
-    my $file = Path::Class::File::Lockable->new('path/to/file');
-    $file->lock;
-    # do stuff to $file
-    $file->unlock;
+ my $file = Path::Class::File::Lockable->new('path/to/file');
+ $file->lock;
+ # do stuff with $file
+ $file->unlock;
 
 =head1 DESCRIPTION
 
@@ -142,7 +136,14 @@ This method should be NFS-safe via File::NFSLock.
 
 sub lock {
     my $self = shift;
-    my $owner = shift || ( getpwuid($<) )[0] || 'anonymous';
+    my $owner;
+    if ( $^O eq 'MSWin32' ) {
+        require Win32;
+        $owner = Win32::LoginName();
+    }
+    else {
+        $owner = shift || getlogin() || ( getpwuid($<) )[0] || 'anonymous';
+    }
 
     # we have to lock our lock file first, to avoid
     # NFS and race condition badness.
